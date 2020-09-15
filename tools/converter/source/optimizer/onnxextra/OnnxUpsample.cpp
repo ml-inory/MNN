@@ -104,7 +104,7 @@ public:
         auto inputs = expr->inputs();
         // input, roi, scales, sizes
         // for more information, please reference from https://github.com/onnx/onnx/blob/master/docs/Operators.md#Resize
-        MNN_CHECK((inputs.size() == 4) || (inputs.size() == 2), "Onnx Resize should have 4 or 2 inputs!");
+        MNN_CHECK((inputs.size() == 4) || (inputs.size() == 3) || (inputs.size() == 2), "Onnx Resize should have 4 or 3 or 2 inputs!");
 
         std::string resizeMode = "";
         std::string coordMode = ""; // detect align_corner attribute
@@ -140,6 +140,17 @@ public:
         VARP output;
         if (inputs.size() == 2) {
             auto ptr = inputs[1]->readMap<float>();
+            MNN_ASSERT((ptr[0] == 1) && (ptr[1] == 1));
+            resizeParam->heightScale = ptr[2];
+            resizeParam->widthScale = ptr[3];
+            mergeredResize->main.value = resizeParam.release();
+            auto resizeExpr = Expr::create(mergeredResize.get(), {_Convert(inputs[0], NC4HW4)});
+            resizeExpr->setName(expr->name());
+            output = _Convert(Variable::create(resizeExpr), NCHW);
+            return output->expr().first;
+        }
+        else if (inputs.size() == 3) {
+            auto ptr = inputs[2]->readMap<float>();
             MNN_ASSERT((ptr[0] == 1) && (ptr[1] == 1));
             resizeParam->heightScale = ptr[2];
             resizeParam->widthScale = ptr[3];
