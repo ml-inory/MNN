@@ -70,6 +70,7 @@ option(NATIVE_INCLUDE_OUTPUT "Native Include Path" OFF)
 option(MNN_AAPL_FMWK "Build MNN.framework instead of traditional .a/.dylib" OFF)
 option(MNN_FMA_ENABLE "x86 routine use fma extension" OFF)
 option(MNN_WITH_PLUGIN "Build with plugin op support." OFF)
+option(MNN_BUILD_QUANT_TEST "Build quant_test." OFF)
 
 IF(NOT MNN_BUILD_SHARED_LIBS)
   message(WARNING "Close MNN_SEP_BUILD for static library")
@@ -559,6 +560,9 @@ include(${CMAKE_CURRENT_LIST_DIR}/tools/quantization/CMakeLists.txt)
 ENDIF()
 IF(MNN_EVALUATION)
 include(${CMAKE_CURRENT_LIST_DIR}/tools/evaluation/CMakeLists.txt)
+ENDIF()
+IF(MNN_BUILD_QUANT_TEST)
+include(${CMAKE_CURRENT_LIST_DIR}/quant_test/cpp/CMakeLists.txt)
 ENDIF()
 
 # Install headers

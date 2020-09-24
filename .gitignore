@@ -363,3 +363,8 @@ project/ios/ios_32
 project/ios/MNN.framework
 
 pymnn_build/
+benchmark/models/yolov5s_448x640.mnn
+benchmark/models/yolov5lite_448x640.mnn
+
+quant_test/VOCdevkit
+quant_test/quant_images
