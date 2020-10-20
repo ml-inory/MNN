@@ -22,18 +22,16 @@ def pick_images(img_num, input_folder, output_folder='./quant_images/', input_si
 
 def quant(input_model_path, config_path, output_model, img_num=30, feature_quant='KL', weight_quant='MAX_ABS'):
     input_model = input_model_path
-    output_model = os.path.join('models/quant/', output_model)
     config = json.load(open(config_path, 'r'))
     config['feature_quantize_method'] = feature_quant
     config['weight_quantize_method'] = weight_quant
-    img_path = config['path']
     config['used_image_num'] = img_num
     json.dump(config, open(config_path, 'w'), indent=2)
     time.sleep(3)
-    os.system(f'../build/quantized.out {input_model} {output_model} {config_path}')
+    os.system(f'../../build/quantized.out {input_model} {output_model} {config_path}')
 
 if __name__ == '__main__':
-    input_folder = './ssd_mbv2_gw/train'
+    input_folder = './train'
     img_folder = './quant_images'
     if not os.path.exists(img_folder):
         os.mkdir(img_folder)
@@ -46,4 +44,4 @@ if __name__ == '__main__':
     
     for img_num in img_num_range:
         pick_images(img_num, input_folder, img_folder)
-        quant('./ssd_mbv2_gw/ssd_mbv2_gw.mnn', './ssd_mbv2_gw/ssd_mbv2_gw.json', 'ssd_mbv2_gw_quant_%d.mnn' % img_num, img_num, feature_quant, weight_quant)
+        quant('./ssd_mbv2_gw.mnn', './ssd_mbv2_gw.json', './ssd_mbv2_gw_quant_%d.mnn' % img_num, img_num, feature_quant, weight_quant)
